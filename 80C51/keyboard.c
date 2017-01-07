@@ -7,6 +7,15 @@
 #define KEY_6 0xFB
 #define KEY_2 0xFD
 
+
+unsigned char etatPrecedent[4];
+//etatPrecedent[0] = {0, 0, 0, 0};
+//etatPrecedent[1] = {0, 0, 0, 0};
+//etatPrecedent[2] = {0, 0, 0, 0};
+//etatPrecedent[3] = {0, 0, 0, 0};
+
+
+
 /**
  * Detecte les touches 8, 4, 6 et 2 comme des fleches.
  * - '8' --> Fleche montante.
@@ -17,8 +26,21 @@
  * @return La fleche correspondante à la touche enfoncée, ou ARROW_NEUTRAL
  * si aucune touche est enfoncée.
  */
+
+
 Arrow KEYBOARD_readArrows(unsigned char *keyboard) {
-	// À faire:
+	if (keyboard[0] == KEY_8) {
+		return ARROW_UP;
+	}
+	if (keyboard[1] == KEY_4) {
+		return ARROW_LEFT;
+	}
+	if (keyboard[1] == KEY_6) {
+		return ARROW_RIGHT;
+	}
+	if (keyboard[2] == KEY_2) {
+		return ARROW_DOWN;
+	}
 	return ARROW_NEUTRAL;
 }
 
@@ -28,9 +50,19 @@ int testKeyboardArrows() {
 	int testsInError = 0;
 	unsigned char keys[4] = {KEY_NONE, KEY_NONE, KEY_NONE, KEY_NONE};
 
+	unsigned char montest[2] = {0xFD, 0b00001111, 0b0};
+
+	int i = 1;
+	
+	unsigned char test = 0xFD;
+	
 	testsInError += assertEquals(KEYBOARD_readArrows(keys), ARROW_NEUTRAL, "KB001");
 	
 	keys[0] = KEY_8;
+	keys[0] = 0xFD;
+	
+	
+	
 	testsInError +=assertEquals(KEYBOARD_readArrows(keys), ARROW_UP, "KB002");
 	keys[0] = KEY_NONE;
 	keys[1] = KEY_4;

@@ -55,8 +55,8 @@ void main(void) {
 	//testsInError += testBuffer();
 	//testsInError += testSnake();
 	testsInError += testKeyboard();
-	//testsInError += testFruit();
-	//testsInError += testGameboard();
+	testsInError += testFruit();
+	testsInError += testGameboard();
 
 	printf("%d tests en erreur", testsInError);
 

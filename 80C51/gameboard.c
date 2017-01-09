@@ -48,22 +48,36 @@ void GMB_initialize() {
  */
 void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1) {
    int i;
-   /*
-           "ABBBBBBBBC",
+   /*   A = x0,y0
+        "ABBBBBBBBC",
         "D........E",
         "D........E",
         "D........E",
         "FGGGGGGGGH"
-   
+   #define BDD_SCREEN_X 19
+   #define BDD_SCREEN_Y 10
+   #define BDD_SCREEN_WIDTH 10
+   #define BDD_SCREEN_HEIGHT 5   
+   BDD_SCREEN_X, BDD_SCREEN_Y, BDD_SCREEN_X + BDD_SCREEN_WIDTH - 1, BDD_SCREEN_Y + BDD_SCREEN_HEIGHT - 1
    */
-   for(i = x1; i < x0; i++) {
+   T6963C_writeAt(x0, y0, OBSTACLE_A);
+   for(i = x0+1; i < x1; i++) {
+      T6963C_writeAt(i, y0, OBSTACLE_B);
+   }
+   T6963C_writeAt(x1, y0, OBSTACLE_C);
+   
+   //T6963C_writeAt(x1, y1, OBSTACLE_H);
+   //T6963C_writeAt(x0, y0, OBSTACLE_F);
+   //T6963C_writeAt(x0, y0, OBSTACLE_H);
+   
+   /*for(i = x1; i < x0; i++) {
       T6963C_writeAt(i, y0, OBSTACLE_A);
       T6963C_writeAt(i, y1, OBSTACLE_B);
    }
    for(i = y0; i < y1; i++) {
       T6963C_writeAt(x0, i, OBSTACLE_C);
       T6963C_writeAt(x1, i, OBSTACLE_D);
-   }
+   }*/
 }
 
 /**

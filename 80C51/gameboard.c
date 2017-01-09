@@ -61,12 +61,15 @@ void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
    BDD_SCREEN_X, BDD_SCREEN_Y, BDD_SCREEN_X + BDD_SCREEN_WIDTH - 1, BDD_SCREEN_Y + BDD_SCREEN_HEIGHT - 1
    */
    T6963C_writeAt(x0, y0, OBSTACLE_A);
-   
    for(i = x0+1; i < x1; i++) {
       T6963C_writeAt(i, y0, OBSTACLE_B);
+      T6963C_writeAt(i, y1, OBSTACLE_G);
    }
    T6963C_writeAt(x1, y0, OBSTACLE_C);
-   
+   for(i = y0+1; i < y1; i++) {
+      T6963C_writeAt(x0, i, OBSTACLE_C);
+      T6963C_writeAt(x1, i, OBSTACLE_D);
+   }
    //T6963C_writeAt(x1, y1, OBSTACLE_H);
    //T6963C_writeAt(x0, y0, OBSTACLE_F);
    //T6963C_writeAt(x0, y0, OBSTACLE_H);

@@ -13,17 +13,7 @@
  * le paramètre est mis à jour avec la position effective du fruit.
  */
 void FRUIT_placeInFreeSpace(Position *position) {
-   /* Loop until we find a free cell */
-   while(T6963C_readFrom(position->x, position->y) != EMPTY) {
-      /* Update position, if we have some room go right, otherwise reset to 0 */
-      if (position->x <= SNAKE_LIMIT_X1) {
-	 position->x++;
-      } else {
-	 position->x = SNAKE_LIMIT_X0;
-      }
-   }
-   /* Draw the fruit */
-   T6963C_writeAt(position->x, position->y, FRUIT);
+	// À faire.
 }
 
 /**
@@ -34,8 +24,7 @@ void FRUIT_placeInFreeSpace(Position *position) {
  * @param position Paramètre de sortie, avec la position du fruit.
  */
 void FRUIT_random(Position *position) {
-      position->x = rand() % SNAKE_LIMIT_X1;
-      position->y = rand() % SNAKE_LIMIT_Y1;
+	// À faire.
 }
 
 /**

@@ -18,8 +18,19 @@
  * si aucune touche est enfoncée.
  */
 Arrow KEYBOARD_readArrows(unsigned char *keyboard) {
-	// À faire:
-	return ARROW_NEUTRAL;
+    if (keyboard[0] == KEY_8) {
+        return ARROW_UP;
+    }
+    if (keyboard[1] == KEY_4) {
+        return ARROW_LEFT;
+    }
+    if (keyboard[1] == KEY_6) {
+        return ARROW_RIGHT;
+    }
+    if (keyboard[2] == KEY_2) {
+        return ARROW_DOWN;
+    }
+    return ARROW_NEUTRAL;
 }
 
 #ifdef TEST

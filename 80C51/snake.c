@@ -5,6 +5,8 @@
 #include "gameboard.h"
 #include "snake.h"
 
+#include <stdio.h>
+
 #define FRUIT_CALORIES 3
 
 /**
@@ -12,10 +14,21 @@
  * @param snake La description du serpent.
  */
 void SNAKE_move(Snake *snake) {
-	// À faire
-
-   
+   switch(snake->direction) {
+      case MOVES_DOWN:
+	 snake->position.y++;
+	 break;
+      case MOVES_UP:
+	 snake->position.y--;
+	 break;      
+      case MOVES_LEFT:
+	 snake->position.x--;
+	 break;
+      case MOVES_RIGHT:
+	 snake->position.x++;
+	 break;       
    }
+}
 
 /**
  * Décide si le serpent vit ou meurt, ou mange un fruit, selon
@@ -47,6 +60,10 @@ void SNAKE_liveOrDie(Snake *snake) {
 	 snake->status = ALIVE;
 	 break;
    }
+   /* Check if snake is still in game area */
+   if (snake->position.x == SNAKE_LIMIT_X0 || snake->position.x >= SNAKE_LIMIT_X1 || snake->position.y == SNAKE_LIMIT_Y0 || snake->position.y >= SNAKE_LIMIT_Y1) {
+      snake->status = DEAD;
+   }
 }
 
 /**
@@ -54,7 +71,11 @@ void SNAKE_liveOrDie(Snake *snake) {
  * @param snake La définition du serpent.
  */
 void SNAKE_showHead(Snake *snake) {
-   T6963C_writeAt(snake->position.x, snake->position.y, SNAKE_HEAD);
+   unsigned char head = SNAKE_HEAD;
+   if (snake->status == DEAD) {
+      head = SNAKE_DEAD;
+   }
+   T6963C_writeAt(snake->position.x, snake->position.y, head);
 }
 
 /**
@@ -63,15 +84,24 @@ void SNAKE_showHead(Snake *snake) {
  * @param snake La définition du serpent.
  */
 void SNAKE_showBody(Snake *snake) {
-
-/* Afficher le corps sur la tête -> bufferiser position */   
-   
-/* caloriesleft init à 5
-   Ne pas effacer la queue si caloriesleft > 0 si non caloriesleft - 1 */   
-   if (snake->caloriesleft > 0) {
-      
+   unsigned char tail_pos_x, tail_pos_y, body = SNAKE_BODY;
+   if (snake->status == EATING) {
+      body = SNAKE_SWALLOW;
    }
-   
+   /* Draw the snake body at the head position */
+   T6963C_writeAt(snake->position.x, snake->position.y, body);
+   /* Bufferise new body position */
+   BUFFER_in(snake->position.x);
+   BUFFER_in(snake->position.y);
+   /* If there are any calories left we do not erase the tail of the snake */
+   if (snake->caloriesLeft > 0) {
+      snake->caloriesLeft--;
+   } else {
+      /* Erase the tail of the snake */
+      tail_pos_x = BUFFER_out();
+      tail_pos_y = BUFFER_out();
+      T6963C_writeAt(tail_pos_x, tail_pos_y, EMPTY);
+   }
 }
 
 /**
@@ -84,22 +114,18 @@ void SNAKE_turn(Snake *snake, Arrow arrow) {
    if (arrow == ARROW_UP && snake->direction != MOVES_DOWN) {
       /* Move up */
       snake->direction = MOVES_UP;
-      snake->position.y--;
    }
    if (arrow == ARROW_DOWN && snake->direction != MOVES_UP) {
       /* Move down */
       snake->direction = MOVES_DOWN;
-      snake->position.y++;
    }   
    if (arrow == ARROW_LEFT && snake->direction != MOVES_RIGHT) {
       /* Move left */
       snake->direction = MOVES_LEFT;
-      snake->position.x--;
    }
    if (arrow == ARROW_RIGHT && snake->direction != MOVES_LEFT) {
       /* Move right */
       snake->direction = MOVES_RIGHT;
-      snake->position.x++;
    }   
 }
 
@@ -293,7 +319,6 @@ int bddSnakeHitsThisObstacle(char obstacle, char *testId) {
 	for (n = 0; n < 5; n++) {
 		SNAKE_iterate(&snake, ARROW_NEUTRAL);
 	}
-
 	return BDD_assert(c, testId);
 }
 
@@ -336,7 +361,6 @@ int bddSnakeMovesTurnsAndCatchesAFruit() {
 	for (n = 0; n < 3; n++) {
 		SNAKE_iterate(&snake, ARROW_LEFT);
 	}
-
 	return BDD_assert(c, "SNTF");
 }
 
@@ -356,7 +380,6 @@ int bddSnakeGrows() {
 	for (n=0; n<7; n++) {
 		SNAKE_iterate(&snake, ARROW_NEUTRAL);
 	}
-	
 	return BDD_assert(c, "SNG");
 }
 
@@ -367,18 +390,18 @@ int bddSnakeGrows() {
  */
 int testSnake() {
 	int testsInError = 0;
-
+   
 	// Tests unitaires:
 	testsInError += testSnakeTurns();
-	/*testsInError += testSnakeMoves();
-	testsInError += testSnakeHitsABorder();*/
-	//testsInError += testSnakeEatsAFruit();
+	testsInError += testSnakeMoves();
+	testsInError += testSnakeHitsABorder();
+	testsInError += testSnakeEatsAFruit();
 
 	// Tests de comportement:
-	/*testsInError += bddSnakeGrows();
+	testsInError += bddSnakeGrows();
 	testsInError += bddSnakeMovesTurnsAndCatchesAFruit();
 	testsInError += bddSnakeHitsAnObstacle();
-	testsInError += bddSnakeHitsItsTail();*/
+	testsInError += bddSnakeHitsItsTail();
 
 	// Nombre de tests en erreur:
 	return testsInError;

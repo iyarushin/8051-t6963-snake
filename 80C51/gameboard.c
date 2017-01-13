@@ -84,20 +84,12 @@ void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
  * @param x1, y1: Coordonnées de l'angle inférieur gauche.
  */
 void GMB_clear(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1) {
-   unsigned char i;
-   
+   unsigned char i, j;
    for(i = x0; i <= x1; i++) {
-      T6963C_writeAt(i, y0, EMPTY);
+      for(j = y0; j <= y1; j++) {
+	 T6963C_writeAt(i, j, EMPTY);
+      }
    }
-   
-   for(i = x0; i <= x1; i++) {
-      T6963C_writeAt(i, y0 + 1, EMPTY);
-   }
-   
-   for(i = x0; i <= x1; i++) {
-      T6963C_writeAt(i, y0 + 2, EMPTY);
-   }
-   
 }
 
 /**

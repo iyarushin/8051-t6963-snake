@@ -68,7 +68,8 @@ void SNAKE_showBody(Snake *snake) {
    
 /* caloriesleft init à 5
    Ne pas effacer la queue si caloriesleft > 0 si non caloriesleft - 1 */   
-   if (snake->caloriesleft) {
+   if (snake->caloriesleft > 0) {
+      
    }
    
 }

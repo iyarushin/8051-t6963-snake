@@ -53,10 +53,10 @@ void main(void) {
 	STDIO_initialize();
 
 	//testsInError += testBuffer();
-	//testsInError += testSnake();
-	testsInError += testKeyboard();
-	testsInError += testFruit();
-	testsInError += testGameboard();
+	testsInError += testSnake();
+	//testsInError += testKeyboard();
+	//testsInError += testFruit();
+	//testsInError += testGameboard();
 
 	printf("%d tests en erreur", testsInError);
 

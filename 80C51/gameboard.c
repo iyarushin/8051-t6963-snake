@@ -47,7 +47,7 @@ void GMB_initialize() {
  * @param x1, y1: Coordonnées de l'angle inférieur gauche.
  */
 void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1) {
-   int i;
+    unsigned char i;
    /*   A = x0,y0
         "ABBBBBBBBC",
         "D........E",
@@ -60,6 +60,8 @@ void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
    #define BDD_SCREEN_HEIGHT 5   
    BDD_SCREEN_X, BDD_SCREEN_Y, BDD_SCREEN_X + BDD_SCREEN_WIDTH - 1, BDD_SCREEN_Y + BDD_SCREEN_HEIGHT - 1
    */
+      
+   
    T6963C_writeAt(x0, y0, OBSTACLE_A);
    for(i = x0+1; i < x1; i++) {
       T6963C_writeAt(i, y0, OBSTACLE_B);
@@ -67,21 +69,12 @@ void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
    }
    T6963C_writeAt(x1, y0, OBSTACLE_C);
    for(i = y0+1; i < y1; i++) {
-      T6963C_writeAt(x0, i, OBSTACLE_C);
-      T6963C_writeAt(x1, i, OBSTACLE_D);
+      T6963C_writeAt(x0, i, OBSTACLE_D);
+      T6963C_writeAt(x1, i, OBSTACLE_E);
    }
-   //T6963C_writeAt(x1, y1, OBSTACLE_H);
-   //T6963C_writeAt(x0, y0, OBSTACLE_F);
-   //T6963C_writeAt(x0, y0, OBSTACLE_H);
+   T6963C_writeAt(x1, y1, OBSTACLE_H);
+   T6963C_writeAt(x0, y1, OBSTACLE_F);
    
-   /*for(i = x1; i < x0; i++) {
-      T6963C_writeAt(i, y0, OBSTACLE_A);
-      T6963C_writeAt(i, y1, OBSTACLE_B);
-   }
-   for(i = y0; i < y1; i++) {
-      T6963C_writeAt(x0, i, OBSTACLE_C);
-      T6963C_writeAt(x1, i, OBSTACLE_D);
-   }*/
 }
 
 /**
@@ -91,7 +84,20 @@ void GMB_draw(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
  * @param x1, y1: Coordonnées de l'angle inférieur gauche.
  */
 void GMB_clear(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1) {
-	// À faire.
+   unsigned char i;
+   
+   for(i = x0; i <= x1; i++) {
+      T6963C_writeAt(i, y0, EMPTY);
+   }
+   
+   for(i = x0; i <= x1; i++) {
+      T6963C_writeAt(i, y0 + 1, EMPTY);
+   }
+   
+   for(i = x0; i <= x1; i++) {
+      T6963C_writeAt(i, y0 + 2, EMPTY);
+   }
+   
 }
 
 /**
@@ -102,7 +108,18 @@ void GMB_clear(unsigned char x0, unsigned char y0, unsigned char x1, unsigned ch
  * @param text Le texte à afficher.
  */
 void GMB_display(unsigned char x0, unsigned char y0, char *text) {
-	// À faire.
+   unsigned char n;
+   unsigned char txt_size = strlen(text);
+  
+   unsigned char x1 = x0 + txt_size + 1;
+   unsigned char y1 = y0 + 2;
+   
+   GMB_draw(x0, y0, x1, y1);
+
+   for(n = 0; n < txt_size; n++) {
+	  T6963C_writeAt(x0 + 1 + n, y0 + 1, text[n] - 32); 
+   }
+   
 }
 
 #ifdef TEST
@@ -152,8 +169,8 @@ int testGameboard() {
 	int testsInError = 0;
 
 	testsInError += bddGameboardDraw();
-	//testsInError += bddGameboardClear();
-	//testsInError += bddGameboardDisplay();
+	testsInError += bddGameboardClear();
+	testsInError += bddGameboardDisplay();
 
 	return testsInError;
 }

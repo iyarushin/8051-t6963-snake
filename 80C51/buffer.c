@@ -1,6 +1,6 @@
 #include "test.h"
 
-#define BUFFER_SIZE 250
+#define BUFFER_SIZE 256
 
 /**
  * Le buffer est déclaré comme mémoire externe.
@@ -19,7 +19,7 @@ unsigned char out = 0;
  * @param c Le caractère.
  */
 void BUFFER_in(char c) {
-   buffer[in % BUFFER_SIZE] = c;
+   buffer[in] = c;
    in++;
 }
 
@@ -28,7 +28,7 @@ void BUFFER_in(char c) {
  * @return Le caractère.
  */
 char BUFFER_out() {
-   char cout = buffer[out % BUFFER_SIZE];
+   char cout = buffer[out];
    out++;
    return cout;
 }
